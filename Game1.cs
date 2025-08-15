@@ -76,6 +76,7 @@ namespace TerraMine
             _firstMouse = true;
             _mouseCaptured = false;
             UpdateWindowCenter();
+            CaptureMouse();
             // Инициализация матриц
             _world = Matrix.Identity;
             _view = Matrix.CreateLookAt(_cameraPosition, _cameraTarget, _cameraUp);
