@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -40,7 +40,6 @@ namespace TerraMine
             IsMouseVisible = true; // Сначала мышь видна
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += (s, e) => UpdateWindowCenter();
-            Window.MouseClick += (s, e) => CaptureMouse();
             // Настройка графики
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 720;
