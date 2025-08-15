@@ -66,10 +66,10 @@ namespace TerraMine
         protected override void Initialize()
         {
             // Инициализация камеры
-            _cameraPosition = new Vector3(0, 0, 0);
-            _cameraTarget = new Vector3(0, 0, 1);
+            _cameraPosition = new Vector3(0, 0, -6);
+            _cameraTarget = new Vector3(0, 0, 0);
             _cameraUp = Vector3.Up;
-            _cameraYaw = 0f;
+            _cameraYaw = MathHelper.PiOver2;
             _cameraPitch = 0f;
             _cameraSpeed = 5f;
             _mouseSensitivity = 0.002f;
@@ -78,7 +78,7 @@ namespace TerraMine
             UpdateWindowCenter();
             // Инициализация матриц
             _world = Matrix.Identity;
-            _view = Matrix.CreateLookAt(_cameraPosition, _cameraTarget, _cameraUp);
+            UpdateViewMatrix();
             _projection = Matrix.CreatePerspectiveFieldOfView(
                 MathHelper.ToRadians(45f),
                 GraphicsDevice.Viewport.AspectRatio,
@@ -108,17 +108,19 @@ namespace TerraMine
             // Вершины куба (8 вершин)
             VertexPositionColor[] vertices = new VertexPositionColor[8];
 
+            Color c = Color.White;
+
             // Передняя грань
-            vertices[0] = new VertexPositionColor(new Vector3(-1, -1, 1), Color.Red);
-            vertices[1] = new VertexPositionColor(new Vector3(1, -1, 1), Color.Green);
-            vertices[2] = new VertexPositionColor(new Vector3(1, 1, 1), Color.Blue);
-            vertices[3] = new VertexPositionColor(new Vector3(-1, 1, 1), Color.Yellow);
+            vertices[0] = new VertexPositionColor(new Vector3(-1, -1, 1), c);
+            vertices[1] = new VertexPositionColor(new Vector3(1, -1, 1), c);
+            vertices[2] = new VertexPositionColor(new Vector3(1, 1, 1), c);
+            vertices[3] = new VertexPositionColor(new Vector3(-1, 1, 1), c);
 
             // Задняя грань
-            vertices[4] = new VertexPositionColor(new Vector3(-1, -1, -1), Color.Cyan);
-            vertices[5] = new VertexPositionColor(new Vector3(1, -1, -1), Color.Magenta);
-            vertices[6] = new VertexPositionColor(new Vector3(1, 1, -1), Color.White);
-            vertices[7] = new VertexPositionColor(new Vector3(-1, 1, -1), Color.Orange);
+            vertices[4] = new VertexPositionColor(new Vector3(-1, -1, -1), c);
+            vertices[5] = new VertexPositionColor(new Vector3(1, -1, -1), c);
+            vertices[6] = new VertexPositionColor(new Vector3(1, 1, -1), c);
+            vertices[7] = new VertexPositionColor(new Vector3(-1, 1, -1), c);
 
             // Создание VertexBuffer
             _cubeVertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), vertices.Length, BufferUsage.WriteOnly);
@@ -176,8 +178,6 @@ namespace TerraMine
             UpdateViewMatrix();
             // Обновление BasicEffect
             _basicEffect.View = _view;
-            // Куб всегда перед камерой
-            UpdateCubeWorldMatrix();
             base.Update(gameTime);
         }
 
@@ -257,15 +257,6 @@ namespace TerraMine
 
             // Создание матрицы вида
             _view = Matrix.CreateLookAt(_cameraPosition, _cameraTarget, _cameraUp);
-        }
-
-        private void UpdateCubeWorldMatrix()
-        {
-            // Куб на фиксированном расстоянии перед камерой (например, 5 единиц)
-            Vector3 direction = Vector3.Normalize(_cameraTarget - _cameraPosition);
-            Vector3 cubePos = _cameraPosition + direction * 5f;
-            _world = Matrix.CreateTranslation(cubePos);
-            _basicEffect.World = _world;
         }
 
         protected override void Draw(GameTime gameTime)
